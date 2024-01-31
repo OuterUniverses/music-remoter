@@ -6,17 +6,19 @@ import {User} from "@nextui-org/react";
 import {getUserProfile} from "@/app/lib/spotify";
 import SignOutButton from "@/app/ui/signOutButton";
 import Queue from "@/app/ui/queue";
+import {Suspense} from "react";
+import QueueSkeleton from "@/app/ui/skeleton/queueSkeleton";
 
 export default async function Page(
     {searchParams}: { searchParams?: { query?: string; page?: number; track_uri?: string;} }
 ) {
-    checkEnv(['SPOTIFY_CLIENT_ID', 'SPOTIFY_CLIENT_ID', 'SPOTIFY_REDIRECT_URI', 'SPOTIFY_DEVICE_ID'])
+    checkEnv(['NEXT_PUBLIC_SPOTIFY_CLIENT_ID', 'SPOTIFY_CLIENT_SECRET', 'NEXT_PUBLIC_SPOTIFY_REDIRECT_URI', 'SPOTIFY_DEVICE_ID'])
     const user = await getUserProfile()
     const query = searchParams?.query || ''
     const currentPage = searchParams?.page || 1
 
     return (
-        <main className="container mx-auto space-y-4">
+        <main className="container mx-auto py-10 space-y-4">
             <div className={'flex items-center'}>
                 <h1 className={'font-bold text-2xl md:text-5xl bg-kleinblue-front text-kleinblue-back mb-3 py-3 px-5 -rotate-3 translate-x-1'}>点歌台</h1>
                 <div className={'flex-grow'}/>
@@ -25,7 +27,9 @@ export default async function Page(
                 <SignOutButton/>
             </div>
             <Player/>
-            <Queue/>
+            <Suspense fallback={<QueueSkeleton/>}>
+                <Queue/>
+            </Suspense>
             <Search/>
             <SongList query={query} currentPage={currentPage}/>
         </main>

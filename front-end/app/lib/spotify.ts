@@ -87,6 +87,11 @@ export async function getUserProfile() {
     return await sa.currentUser.profile()
 }
 
+export async function getAllDevices() {
+    const sa = await getSA()
+    return await sa.player.getAvailableDevices()
+}
+
 export async function searchTrack(name: string) {
     if (name === '') return undefined
     const sa = await getSA()
@@ -117,6 +122,7 @@ export async function play() {
     const sa = await getSA()
     await sa.player.startResumePlayback(deviceID)
     console.log('Toggle device play')
+    revalidatePath('/')
 }
 
 export async function pause() {
@@ -124,6 +130,7 @@ export async function pause() {
     const sa = await getSA()
     await sa.player.pausePlayback(deviceID)
     console.log('Toggle device pause')
+    revalidatePath('/')
 }
 
 export async function next() {

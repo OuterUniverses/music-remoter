@@ -1,5 +1,5 @@
 import {Button} from "@nextui-org/react";
-import {ArrowRightStartOnRectangleIcon} from "@heroicons/react/24/solid";
+import { MdLogout } from "react-icons/md";
 import {signOut} from "@/app/lib/spotify";
 
 export default function SignOutButton() {
@@ -10,7 +10,7 @@ export default function SignOutButton() {
 
     return <form action={handleClick} className={'ml-2'}>
         <Button type={'submit'} className={'rounded-full bg-white p-3'} size={'lg'} isIconOnly>
-            <ArrowRightStartOnRectangleIcon/>
+            <MdLogout className={'w-5 h-5'}/>
         </Button>
     </form>
 }

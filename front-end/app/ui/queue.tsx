@@ -1,4 +1,5 @@
 import {getQueue} from "@/app/lib/spotify";
+import QueueSkeleton from "@/app/ui/skeleton/queueSkeleton";
 
 export default async function Queue() {
     const tracks = (await getQueue()).queue
