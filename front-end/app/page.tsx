@@ -1,43 +1,33 @@
 import Player from "@/app/ui/player";
 import Search from "@/app/ui/search";
-import {SpotifyApi} from "@spotify/web-api-ts-sdk";
 import SongList from "@/app/ui/songList";
 import {checkEnv} from "@/app/lib/util";
-import {Button, User} from "@nextui-org/react";
-import Link from "next/link";
-import {cookies} from "next/headers";
-import {checkToken} from "@/app/lib/spotify";
-import {signOut} from "@/app/lib/action";
-import {config} from "@/app.config";
-import {ArrowRightStartOnRectangleIcon} from "@heroicons/react/24/solid"
+import {User} from "@nextui-org/react";
+import {getUserProfile} from "@/app/lib/spotify";
+import SignOutButton from "@/app/ui/signOutButton";
+import Queue from "@/app/ui/queue";
 
 export default async function Page(
-    {searchParams}: { searchParams?: { query?: string; page?: number; } }
+    {searchParams}: { searchParams?: { query?: string; page?: number; track_uri?: string;} }
 ) {
-    checkEnv(['SPOTIFY_CLIENT_ID', 'SPOTIFY_CLIENT_ID', 'SPOTIFY_REDIRECT_URI'])
-    const token = checkToken()
-    const sa = SpotifyApi.withAccessToken(config.api.spotifyClientID, token)
-    const user = await sa.currentUser.profile()
-    const devices = await sa.player.getAvailableDevices()
+    checkEnv(['SPOTIFY_CLIENT_ID', 'SPOTIFY_CLIENT_ID', 'SPOTIFY_REDIRECT_URI', 'SPOTIFY_DEVICE_ID'])
+    const user = await getUserProfile()
     const query = searchParams?.query || ''
     const currentPage = searchParams?.page || 1
 
-    console.log('devices', devices)
-
     return (
-        <main className="container mx-auto">
+        <main className="container mx-auto space-y-4">
             <div className={'flex items-center'}>
-                <h1 className={'font-bold text-5xl flex-grow'}>点歌台</h1>
+                <h1 className={'font-bold text-2xl md:text-5xl bg-kleinblue-front text-kleinblue-back mb-3 py-3 px-5 -rotate-3 translate-x-1'}>点歌台</h1>
+                <div className={'flex-grow'}/>
                 <User name={user.display_name} avatarProps={{src: user.images[0].url}} description={user.product}
                       className={'rounded-full bg-white px-4 py-2'}/>
-                <form action={signOut} className={'ml-2'}>
-                    <Button type={'submit'} className={'rounded-full bg-white p-3'} size={'lg'} isIconOnly>
-                        <ArrowRightStartOnRectangleIcon/>
-                    </Button>
-                </form>
+                <SignOutButton/>
             </div>
             <Player/>
+            <Queue/>
             <Search/>
+            <SongList query={query} currentPage={currentPage}/>
         </main>
     );
 }

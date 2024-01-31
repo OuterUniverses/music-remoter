@@ -20,7 +20,7 @@ export async function GET(request: Request) {
         }
         try {
             const response = await spotifyTokenCall(authOptions)
-            console.log('response:', response)
+            // console.log('response:', response)
             writeToken(response)
         } catch (error) {
             if (error instanceof AxiosError) {

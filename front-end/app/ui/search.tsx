@@ -1,12 +1,10 @@
 'use client'
 
-import {Button, Input} from "@nextui-org/react";
+import {Input} from "@nextui-org/react";
 import {usePathname, useSearchParams, useRouter} from "next/navigation";
 import { useDebouncedCallback } from 'use-debounce';
-import {useState} from "react";
 
 export default function Search() {
-    const [value, setValue] = useState<string>('')
     const searchParams = useSearchParams();
     const pathName = usePathname()
     const { replace } = useRouter()
@@ -21,11 +19,12 @@ export default function Search() {
         replace(`${pathName}?${params.toString()}`)
     }, 300)
 
-    return <div className={'mt-10 flex flex-nowrap items-center'}>
+    return <div className={'flex flex-nowrap items-center'}>
         <Input
+            radius={'none'}
             onChange={e => handleSearch(e.target.value)}
             defaultValue={searchParams.get('query')?.toString()}
-            label={'曲名'}
+            label={'搜索'}
             labelPlacement={'inside'}
             className={'h-fit'}
         />

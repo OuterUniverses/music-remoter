@@ -17,6 +17,18 @@ const config: Config = {
                     700: '#121212',
                     600: '#535353',
                     500: '#b3b3b3'
+                },
+                'tangerine': {
+                    'front': '#1A1413',
+                    'back': '#FE4633'
+                },
+                'aquamarine': {
+                    'front': '#F137A6',
+                    'back': '#9CF0E1'
+                },
+                'kleinblue': {
+                    'front': '#4100F6',
+                    'back': '#CEF566'
                 }
             },
             container: {
