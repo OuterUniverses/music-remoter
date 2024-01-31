@@ -1,10 +1,8 @@
-import {SpotifyApi} from "@spotify/web-api-ts-sdk";
-
-export async function searchTrack(sa: SpotifyApi, name: string) {
-    if (name === '') return undefined
-    return await sa.search(name, ["track"])
+export function checkEnv(envKey: Array<string>) {
+    envKey.forEach((key) => {
+        if (process.env[`${key}`] === undefined) {
+            throw new Error(`env ${key} not set!`)
+        }
+    })
 }
 
-export function play(sa: SpotifyApi, targetDeviceID: string, songID: string) {
-    
-}

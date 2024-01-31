@@ -1,6 +1,6 @@
 import {Image, Listbox, ListboxItem} from "@nextui-org/react";
 import {SpotifyApi} from "@spotify/web-api-ts-sdk";
-import {searchTrack} from "@/app/lib/util";
+import {searchTrack} from "@/app/lib/spotify";
 import AddToList from "@/app/ui/addToList";
 
 export default async function SongList(

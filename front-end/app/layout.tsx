@@ -17,9 +17,11 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-        <body className={`${inter.className} min-h-screen py-10`}>
+        <body className={`${inter.className} min-h-screen bg-spotify-900`}>
         <Providers>
-            {children}
+            <div className={'py-10'}>
+                {children}
+            </div>
         </Providers>
         </body>
         </html>
