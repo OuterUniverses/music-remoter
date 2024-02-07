@@ -1,5 +1,3 @@
-'use client'
-
 import {Button} from "@nextui-org/react";
 import {SPOTIFY_AUTH_URL} from "@/app/lib/static";
 import Link from "next/link";

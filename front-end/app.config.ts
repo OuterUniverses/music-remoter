@@ -9,5 +9,9 @@ export const config = {
     "player": {
         "playbackDeviceID": process.env.SPOTIFY_DEVICE_ID as string
     },
-    "tokenFile": "token.json"
+    "app": {
+        "appPath": "/",
+        "authPath": "/auth",
+        "devicePath": "/device"
+    },
 }

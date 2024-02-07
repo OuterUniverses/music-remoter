@@ -29,6 +29,6 @@ export async function GET(request: Request) {
                 return NextResponse.json({'error': error})
             }
         }
-        return redirect('/')
+        return redirect(config.app.appPath)
     }
 }

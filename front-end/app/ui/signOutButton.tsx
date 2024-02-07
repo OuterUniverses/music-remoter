@@ -9,7 +9,7 @@ export default function SignOutButton() {
     }
 
     return <form action={handleClick} className={'ml-2'}>
-        <Button type={'submit'} className={'rounded-full bg-white p-3'} size={'lg'} isIconOnly>
+        <Button type={'submit'} className={'rounded-full bg-white p-3'} size={'lg'} isIconOnly aria-label={'退出登陆'}>
             <MdLogout className={'w-5 h-5'}/>
         </Button>
     </form>

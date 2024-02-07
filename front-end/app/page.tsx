@@ -1,18 +1,19 @@
 import Player from "@/app/ui/player";
 import Search from "@/app/ui/search";
 import SongList from "@/app/ui/songList";
-import {checkEnv, readFile} from "@/app/lib/util";
+import {checkEnv} from "@/app/lib/util";
 import {User} from "@nextui-org/react";
-import {getUserProfile} from "@/app/lib/spotify";
+import {checkDeviceOnline, getDeviceInfoByID, getUserProfile} from "@/app/lib/spotify";
 import SignOutButton from "@/app/ui/signOutButton";
 import Queue from "@/app/ui/queue";
 import {Suspense} from "react";
 import QueueSkeleton from "@/app/ui/skeleton/queueSkeleton";
+import {config} from "@/app.config";
 
 export default async function Page(
     {searchParams}: { searchParams?: { query?: string; page?: number; track_uri?: string;} }
 ) {
-    checkEnv(['NEXT_PUBLIC_SPOTIFY_CLIENT_ID', 'SPOTIFY_CLIENT_SECRET', 'NEXT_PUBLIC_SPOTIFY_REDIRECT_URI', 'SPOTIFY_DEVICE_ID'])
+    checkEnv(['NEXT_PUBLIC_SPOTIFY_CLIENT_ID', 'SPOTIFY_CLIENT_SECRET', 'NEXT_PUBLIC_SPOTIFY_REDIRECT_URI'])
     const user = await getUserProfile()
     const query = searchParams?.query || ''
     const currentPage = searchParams?.page || 1

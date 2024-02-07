@@ -6,7 +6,7 @@ export default async function Queue() {
     // console.log('queue', tracks)
 
     return <div className={'bg-spotify-700 p-5 max-h-64 overflow-y-scroll'}>
-        <span className={'text-white text-3xl font-bold p-2'}>队列</span>
+        <p className={'text-white text-3xl font-bold p-2'}>队列</p>
         <div>
             {
                 tracks.map((track, index) => <div key={track.id}

@@ -1,11 +1,15 @@
-import {Button, Image} from "@nextui-org/react";
+import {Image, Tooltip} from "@nextui-org/react";
 import AlbumCover from "@/public/temp/album1.jpg";
-import {getPlayerState, pause, play, next} from "@/app/lib/spotify";
+import {getPlayerState, pause, play, next, getDeviceInfoByID, getAllDevices} from "@/app/lib/spotify";
 import {revalidatePath} from "next/cache";
-import { MdSkipNext, MdPlayArrow, MdOutlinePause, MdOutlineRefresh } from "react-icons/md";
+import {config} from "@/app.config";
+import {DeviceButton, NextButton, PauseButton, PlayButton, RefreshButton} from "@/app/ui/playerButton";
+import {redirect} from "next/navigation";
 
 export default async function Player() {
     const state = await getPlayerState() as any
+    const currDeviceID = globalThis.playbackDeviceID
+    const availableDevices = await getAllDevices()
     const trackName = state ? state.item.name : '播放器闲置中~'
     const artistsName = state ? state.item.artists[0].name : 'Ciallo～(∠·ω< )⌒★'
     const cover = state ? state.item.album.images[0].url : AlbumCover.src
@@ -26,7 +30,7 @@ export default async function Player() {
 
     const handleRefresh = async () => {
         'use server'
-        revalidatePath('/')
+        revalidatePath(config.app.appPath)
     }
 
     return <div className={'flex flex-wrap bg-aquamarine-back p-5 relative justify-center'}>
@@ -40,14 +44,11 @@ export default async function Player() {
             </div>
         </div>
         <div className={'md:absolute md:bottom-0 md:right-0 flex items-center pb-0 pt-5 md:pb-5 px-8 space-x-2'}>
-            <form action={handleRefresh}><Button isIconOnly radius={'full'} variant={"light"} color={'secondary'}
-                                               type={'submit'}><MdOutlineRefresh className={'w-6 h-auto aspect-square'}/></Button></form>
-            <form action={handlePause}><Button isIconOnly radius={'full'} variant={"light"} color={'secondary'}
-                                               type={'submit'}><MdOutlinePause className={'w-6 h-auto aspect-square'}/></Button></form>
-            <form action={handlePlay}><Button isIconOnly radius={'full'} variant={"light"} color={'secondary'}
-                                              type={'submit'}><MdPlayArrow className={'w-6 h-auto aspect-square'}/></Button></form>
-            <form action={handleNext}><Button isIconOnly radius={'full'} variant={"light"} color={'secondary'}
-                                              type={'submit'}><MdSkipNext className={'w-6 h-auto aspect-square'}/></Button></form>
+            <DeviceButton selectedID={currDeviceID} devicesList={availableDevices}/>
+            <form action={handleRefresh}><RefreshButton/></form>
+            <form action={handlePause}><PauseButton/></form>
+            <form action={handlePlay}><PlayButton/></form>
+            <form action={handleNext}><NextButton/></form>
         </div>
     </div>
 }
