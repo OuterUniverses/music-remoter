@@ -1,7 +1,7 @@
 import Player from "@/app/ui/player";
 import Search from "@/app/ui/search";
 import SongList from "@/app/ui/songList";
-import {checkEnv} from "@/app/lib/util";
+import {checkEnv, readFile} from "@/app/lib/util";
 import {User} from "@nextui-org/react";
 import {getUserProfile} from "@/app/lib/spotify";
 import SignOutButton from "@/app/ui/signOutButton";

@@ -6,6 +6,7 @@ import {SpotifyTokenRespond} from "@/app/lib/type";
 import {cookies} from "next/headers";
 import {redirect} from "next/navigation";
 import {revalidatePath} from "next/cache";
+import {deleteFile, readFile, writeFile} from "@/app/lib/util";
 
 export async function spotifyTokenCall(bodyParams: { [key: string]: string }) {
     const axiosConfig = {
@@ -20,37 +21,27 @@ export async function spotifyTokenCall(bodyParams: { [key: string]: string }) {
 
 export async function signOut() {
     console.log('Signing out')
-    const cookiesData = ['access_token', 'expires_at', 'refresh_token', 'scope']
-    cookiesData.forEach((c) => {
-        cookies().delete(c)
-    })
+    await deleteFile(config.tokenFile)
     return redirect('/auth')
 }
 
-export async function getToken(): Promise<SpotifyTokenRespond> {
-    const aToken = cookies().get('access_token')
-    const expIn = cookies().get('expires_in')
-    const rToken = cookies().get('refresh_token')
-    const tokenType = cookies().get('token_type')
-    const scope = cookies().get('scope')
-
-    if (aToken === undefined || expIn === undefined || rToken === undefined || tokenType === undefined || scope === undefined) {
-        console.log('Check token params undefined! Redirecting to auth page.', [aToken, expIn, rToken, tokenType, scope])
-        return redirect('/auth')
-    }
-    const currDate = new Date().toISOString()
-    const expDate = new Date(Date.now() + Number(expIn.value) * 1000).toISOString()
-    // console.log(`currDate: ${currDate} expDate: ${expDate}`)
-    if (currDate > expDate) {
-        console.log('Token expired, renewing token.')
-        await renewToken(rToken.value)
-    }
-    return {
-        access_token: aToken.value,
-        expires_in: Number(expIn.value),
-        refresh_token: rToken.value,
-        token_type: tokenType.value,
-        scope: scope.value
+export async function getToken() {
+    try {
+        const tokenObj = await readFile(config.tokenFile) as SpotifyTokenRespond
+        const currDate = new Date().toISOString()
+        const expDate = new Date(Date.now() + Number(tokenObj.expires_in) * 1000).toISOString()
+        // console.log(`currDate: ${currDate} expDate: ${expDate}`)
+        if (currDate > expDate) {
+            console.log('Token expired, renewing token.')
+            await renewToken(tokenObj.refresh_token)
+        }
+        return tokenObj
+    } catch (error: any) {
+        if (error.code === 'ENOENT') {
+            console.log('Token file missing! Redirecting to auth page.')
+            return redirect('/auth')
+        }
+        throw Error
     }
 }
 
@@ -62,24 +53,27 @@ export async function renewToken(rToken: string) {
     try {
         const respond = await spotifyTokenCall(authOptions)
         console.log('Renew token success!')
-        writeToken(respond)
+        await writeToken(respond)
     } catch (error) {
         console.error('Fail to renew token', error)
     }
 }
 
-export function writeToken(tokenRespond: SpotifyTokenRespond) {
-    cookies().set('access_token', tokenRespond.access_token)
-    cookies().set('expires_in', tokenRespond.expires_in.toString())
-    cookies().set('refresh_token', tokenRespond.refresh_token)
-    cookies().set('token_type', tokenRespond.token_type)
-    cookies().set('scope', tokenRespond.scope)
+export async function writeToken(tokenRespond: SpotifyTokenRespond) {
+    await writeFile(config.tokenFile, JSON.stringify(tokenRespond))
 }
+
 
 export async function getSA() {
     const token = await getToken()
+    const saToken = {
+        access_token: token.access_token,
+        token_type: token.token_type,
+        expires_in: Number(token.expires_in),
+        refresh_token: token.refresh_token
+    }
     const clientID = config.api.spotifyClientID
-    return SpotifyApi.withAccessToken(clientID, token)
+    return SpotifyApi.withAccessToken(clientID, saToken)
 }
 
 export async function getUserProfile() {
