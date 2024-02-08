@@ -8,9 +8,9 @@ import {DeviceButton, NextButton, PauseButton, PlayButton, RefreshButton} from "
 export default async function Player() {
     const state = await getPlayerState() as any
     const currDeviceID = globalThis.playbackDeviceID
-    const trackName = state ? state.item.name : '播放器闲置中~'
-    const artistsName = state ? state.item.artists[0].name : 'Ciallo～(∠·ω< )⌒★'
-    const cover = state ? state.item.album.images[0].url : AlbumCover.src
+    const trackName = state && state.item ? state.item.name : '播放器闲置中~'
+    const artistsName = state && state.item ? state.item.artists[0].name : 'Ciallo～(∠·ω< )⌒★'
+    const cover = state && state.item ? state.item.album.images[0].url : AlbumCover.src
 
     const handlePlay = async () => {
         'use server'

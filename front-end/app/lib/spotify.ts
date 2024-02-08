@@ -90,7 +90,6 @@ export async function getSA() {
         globalThis.SA = SA
         return SA
     }
-    console.log('returning global declare SA')
     return globalThis.SA
 }
 
