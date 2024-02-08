@@ -1,0 +1,20 @@
+version: '3.8'
+services:
+  web:
+    build:
+      context: ./front-end
+    restart: on-failure
+    container_name: music-remoter
+    networks:
+      - out
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.blog.entrypoints=websecure"
+      - "traefik.http.routers.blog.rule=Host(`music.itsp3.space`)"
+      - "traefik.http.routers.blog.tls=true"
+      - "traefik.http.routers.blog.tls.certresolver=production"
+
+networks:
+  out:
+    name: traefik_default
+    external: true

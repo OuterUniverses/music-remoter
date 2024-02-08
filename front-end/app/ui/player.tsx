@@ -1,19 +1,16 @@
-import {Image, Tooltip} from "@nextui-org/react";
+import {Image} from "@nextui-org/react";
 import AlbumCover from "@/public/temp/album1.jpg";
-import {getPlayerState, pause, play, next, getDeviceInfoByID, getAllDevices} from "@/app/lib/spotify";
+import {getPlayerState, pause, play, next} from "@/app/lib/spotify";
 import {revalidatePath} from "next/cache";
 import {config} from "@/app.config";
 import {DeviceButton, NextButton, PauseButton, PlayButton, RefreshButton} from "@/app/ui/playerButton";
-import {redirect} from "next/navigation";
 
 export default async function Player() {
     const state = await getPlayerState() as any
     const currDeviceID = globalThis.playbackDeviceID
-    const availableDevices = await getAllDevices()
     const trackName = state ? state.item.name : '播放器闲置中~'
     const artistsName = state ? state.item.artists[0].name : 'Ciallo～(∠·ω< )⌒★'
     const cover = state ? state.item.album.images[0].url : AlbumCover.src
-    // console.log('state', state)
 
     const handlePlay = async () => {
         'use server'
@@ -44,7 +41,7 @@ export default async function Player() {
             </div>
         </div>
         <div className={'md:absolute md:bottom-0 md:right-0 flex items-center pb-0 pt-5 md:pb-5 px-8 space-x-2'}>
-            <DeviceButton selectedID={currDeviceID} devicesList={availableDevices}/>
+            <DeviceButton selectedID={currDeviceID}/>
             <form action={handleRefresh}><RefreshButton/></form>
             <form action={handlePause}><PauseButton/></form>
             <form action={handlePlay}><PlayButton/></form>

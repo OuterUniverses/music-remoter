@@ -44,32 +44,29 @@ export async function getToken() {
         return redirect(config.app.authPath)
     }
     return tokenObj
-    // const currDate = new Date().toISOString()
-    // const expDate = new Date(Date.now() + Number(tokenObj.expires_in) * 1000).toISOString()
-    // // console.log(`currDate: ${currDate} expDate: ${expDate}`)
-    // if (currDate > expDate) {
-    //     console.log('Token expired, renewing token.')
-    //     await renewToken(tokenObj.refresh_token)
-    // }
 }
 
-export async function checkToken() {
-
+export async function checkToken(tokenObj: SpotifyTokenRespond) {
+    const currDate = new Date().toISOString()
+    const expDate = new Date(Date.now() + Number(tokenObj.expires_in) * 1000).toISOString()
+    // console.log(`currDate: ${currDate} expDate: ${expDate}`)
+    return currDate <= expDate;
 }
 
-// export async function renewToken(rToken: string) {
-//     const authOptions = {
-//         'grant_type': 'refresh_token',
-//         'refresh_token': rToken,
-//     }
-//     try {
-//         const respond = await spotifyTokenCall(authOptions)
-//         console.log('Renew token success!')
-//         await writeToken(respond)
-//     } catch (error) {
-//         console.error('Fail to renew token', error)
-//     }
-// }
+export async function renewToken(rToken: string) {
+    const authOptions = {
+        'grant_type': 'refresh_token',
+        'refresh_token': rToken,
+    }
+    try {
+        const respond = await spotifyTokenCall(authOptions)
+        console.log('Renew token success!')
+        return respond
+    } catch (error) {
+        console.error('Fail to renew token', error)
+        throw new Error('无法更新身份信息')
+    }
+}
 
 export async function writeToken(tokenRespond: SpotifyTokenRespond) {
     globalThis.token = tokenRespond
@@ -77,23 +74,34 @@ export async function writeToken(tokenRespond: SpotifyTokenRespond) {
 
 
 export async function getSA() {
+    const token = await getToken()
+    const clientID = config.api.spotifyClientID
     // 优先返回全局变量的SA
     if (!globalThis.SA) {
-        // console.log('Create new SA')
-        const token = await getToken()
-        const saToken = {
-            access_token: token.access_token,
-            token_type: token.token_type,
-            expires_in: Number(token.expires_in),
-            refresh_token: token.refresh_token
-        }
-        const clientID = config.api.spotifyClientID
-        const SA = SpotifyApi.withAccessToken(clientID, saToken)
+        console.log('SA not existed! Creating...')
+        const SA = await createSA(token, clientID)
+        globalThis.SA = SA
+        return SA
+    }
+    if (!(await checkToken(token))) {
+        console.log('Token expired! Renewing token...')
+        const newToken = await renewToken(token.refresh_token)
+        const SA = await createSA(newToken, clientID)
         globalThis.SA = SA
         return SA
     }
     console.log('returning global declare SA')
     return globalThis.SA
+}
+
+async function createSA(token: SpotifyTokenRespond, clientID: string) {
+    const saToken = {
+        access_token: token.access_token,
+        token_type: token.token_type,
+        expires_in: Number(token.expires_in),
+        refresh_token: token.refresh_token
+    }
+    return SpotifyApi.withAccessToken(clientID, saToken)
 }
 
 export async function getUserProfile() {
@@ -171,6 +179,7 @@ export async function getDeviceInfoByID(deviceID: string) {
 
 export async function transferPlayback(targetID: string) {
     const sa = await getSA()
-    await sa.player.transferPlayback([targetID], true)
+    await sa.player.transferPlayback([targetID], false)
     console.log(`Transfer playback to ${targetID} success`)
+    revalidatePath(config.app.appPath)
 }

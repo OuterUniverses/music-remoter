@@ -3,12 +3,11 @@ import Search from "@/app/ui/search";
 import SongList from "@/app/ui/songList";
 import {checkEnv} from "@/app/lib/util";
 import {User} from "@nextui-org/react";
-import {checkDeviceOnline, getDeviceInfoByID, getUserProfile} from "@/app/lib/spotify";
+import {getUserProfile} from "@/app/lib/spotify";
 import SignOutButton from "@/app/ui/signOutButton";
 import Queue from "@/app/ui/queue";
 import {Suspense} from "react";
 import QueueSkeleton from "@/app/ui/skeleton/queueSkeleton";
-import {config} from "@/app.config";
 
 export default async function Page(
     {searchParams}: { searchParams?: { query?: string; page?: number; track_uri?: string;} }

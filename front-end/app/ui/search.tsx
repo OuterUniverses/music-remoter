@@ -10,13 +10,11 @@ export default function Search() {
     const { replace } = useRouter()
 
     const handleSearch = useDebouncedCallback((term: string) => {
-        console.log(`Searching... ${term}`);
         const params = new URLSearchParams()
-        console.log(term);
         params.set('page', '1');
         if (term) params.set('query', term)
         else params.delete('query')
-        replace(`${pathName}?${params.toString()}`)
+        replace(`${pathName}?${params.toString()}`, {scroll: false})
     }, 300)
 
     return <div className={'flex flex-nowrap items-center'}>

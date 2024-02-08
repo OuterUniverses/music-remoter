@@ -1,17 +1,14 @@
 'use client'
 
-import {SpotifyLoginButton} from "@/app/ui/authButton";
-import {config} from "@/app.config";
 import {useEffect} from "react";
 import {Button} from "@nextui-org/react";
-import {signOut} from "@/app/lib/spotify";
 import {clearCache} from "@/app/lib/action";
 
 export default function Page(
     {error}: {error: Error & { digest?: string }}
 ) {
     useEffect(() => {
-        console.log('config', config.api)
+        // console.log('config', config.api)
     }, []);
 
     return <div className={'w-screen h-screen flex justify-center items-center'}>

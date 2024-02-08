@@ -5,11 +5,10 @@ import {
     Button,
     Dropdown, DropdownItem, DropdownMenu,
     DropdownTrigger,
-    Tooltip
 } from "@nextui-org/react";
 import {useFormStatus} from 'react-dom'
 import {Devices} from "@spotify/web-api-ts-sdk";
-import {transferPlayback} from "@/app/lib/spotify";
+import {getAllDevices, transferPlayback} from "@/app/lib/spotify";
 import {useState} from "react";
 
 export function PlayButton() {
@@ -40,15 +39,21 @@ export function RefreshButton() {
 }
 
 export function DeviceButton(
-    {selectedID, devicesList}: { selectedID?: string, devicesList?: Devices }
+    {selectedID}: { selectedID?: string }
 ) {
     const [selectedKeys, setSelectedKeys] = useState(new Set([selectedID ? selectedID : '']));
+    const [devicesList, setDevicesList] = useState<Devices>({devices: []})
+
     const handleDeviceSelect = async (id: string) => {
         await transferPlayback(id)
         setSelectedKeys(new Set([id]))
     }
 
-    return <Dropdown>
+    const handleDropdownOpen = async () => {
+        setDevicesList(await getAllDevices())
+    }
+
+    return <Dropdown onOpenChange={() => handleDropdownOpen()}>
         <DropdownTrigger>
             <Button isIconOnly radius={'full'} variant={'light'} color={'secondary'} aria-label={'切换设备'}
                     type={'submit'}>

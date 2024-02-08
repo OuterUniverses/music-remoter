@@ -1,5 +1,4 @@
 import {getQueue} from "@/app/lib/spotify";
-import QueueSkeleton from "@/app/ui/skeleton/queueSkeleton";
 
 export default async function Queue() {
     const tracks = (await getQueue()).queue
@@ -9,7 +8,7 @@ export default async function Queue() {
         <p className={'text-white text-3xl font-bold p-2'}>队列</p>
         <div>
             {
-                tracks.map((track, index) => <div key={track.id}
+                tracks.map((track, index) => <div key={track.id + index}
                                                   className={'text-white hover:bg-gray-800 p-2 transition-colors group flex items-start md:items-center'}>
                     <span className={'font-bold mr-2'}>{index + 1}</span>
                     <div className={'flex flex-col md:flex-row'}>

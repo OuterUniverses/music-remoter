@@ -1,0 +1,17 @@
+name: Deploy to Alteza
+
+on:
+  push:
+    branches:
+      - release
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Run Docker Container
+        run: docker compose up -d --build
