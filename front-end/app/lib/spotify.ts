@@ -113,10 +113,11 @@ export async function getAllDevices() {
     return await sa.player.getAvailableDevices()
 }
 
-export async function searchTrack(name: string) {
+export async function searchTrack(name: string, currentPage: number, limit: 10 | 20) {
+    const offset = (currentPage - 1) * 20
     if (name === '') return undefined
     const sa = await getSA()
-    return await sa.search(name, ["track"])
+    return await sa.search(name, ["track"], undefined, limit, offset, 'audio')
 }
 
 export async function addToQueue(trackUri: string) {

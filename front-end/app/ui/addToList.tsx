@@ -23,7 +23,8 @@ export default function AddToList(
     return <Popover isOpen={pop}>
         <PopoverTrigger>
             <Button isIconOnly isLoading={pending} className={`${className} h-10 w-10 p-2 rounded-full`}
-                    color={'secondary'} type={'submit'} onClick={() => handleAdd()} onMouseLeave={() => setPop(false)}>
+                    color={'secondary'} type={'submit'} onClick={() => handleAdd()} onMouseLeave={() => setPop(false)}
+                    aria-label={'添加到播放队列'}>
                 <PlusIcon className={'w-full h-full text-white'}/>
             </Button>
         </PopoverTrigger>

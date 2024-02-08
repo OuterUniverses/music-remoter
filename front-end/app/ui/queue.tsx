@@ -4,7 +4,7 @@ export default async function Queue() {
     const tracks = (await getQueue()).queue
     // console.log('queue', tracks)
 
-    return <div className={'bg-spotify-700 p-5 max-h-64 overflow-y-scroll'}>
+    return <div className={'bg-spotify-700 p-5 max-h-64 overflow-y-scroll'} id={'queue'}>
         <p className={'text-white text-3xl font-bold p-2'}>队列</p>
         <div>
             {

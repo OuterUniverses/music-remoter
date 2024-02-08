@@ -17,7 +17,7 @@ export default function Search() {
         replace(`${pathName}?${params.toString()}`, {scroll: false})
     }, 300)
 
-    return <div className={'flex flex-nowrap items-center'}>
+    return <div className={'flex flex-nowrap items-center'} id={'search'}>
         <Input
             radius={'none'}
             onChange={e => handleSearch(e.target.value)}

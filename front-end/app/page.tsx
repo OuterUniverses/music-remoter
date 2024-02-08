@@ -8,6 +8,7 @@ import SignOutButton from "@/app/ui/signOutButton";
 import Queue from "@/app/ui/queue";
 import {Suspense} from "react";
 import QueueSkeleton from "@/app/ui/skeleton/queueSkeleton";
+import SongListSkeleton from "@/app/ui/skeleton/songListSkeleton";
 
 export default async function Page(
     {searchParams}: { searchParams?: { query?: string; page?: number; track_uri?: string;} }
@@ -31,7 +32,9 @@ export default async function Page(
                 <Queue/>
             </Suspense>
             <Search/>
-            <SongList query={query} currentPage={currentPage}/>
+            <Suspense fallback={<SongListSkeleton/>} key={query + currentPage}>
+                <SongList query={query} currentPage={currentPage}/>
+            </Suspense>
         </main>
     );
 }

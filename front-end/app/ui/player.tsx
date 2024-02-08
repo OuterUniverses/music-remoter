@@ -33,7 +33,7 @@ export default async function Player() {
     return <div className={'flex flex-wrap bg-aquamarine-back p-5 relative justify-center'}>
         <div className={'flex w-full'}>
             <div className={'flex-none min-w-0'}>
-                <Image src={cover} isBlurred className={'h-32 w-32 object-cover'} radius={'none'}/>
+                <Image src={cover} isBlurred className={'h-32 w-32 object-cover'} radius={'none'} alt={`歌曲${trackName}封面`}/>
             </div>
             <div className={'flex flex-col ml-5 text-aquamarine-front flex-grow'}>
                 <div className={'text-xl md:text-5xl font-black'}>{trackName}</div>
