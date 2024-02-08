@@ -8,9 +8,9 @@ import {DeviceButton, NextButton, PauseButton, PlayButton, RefreshButton} from "
 export default async function Player() {
     const state = await getPlayerState() as any
     const currDeviceID = globalThis.playbackDeviceID
-    const trackName = state ? state.item.name : '播放器闲置中~'
-    const artistsName = state ? state.item.artists[0].name : 'Ciallo～(∠·ω< )⌒★'
-    const cover = state ? state.item.album.images[0].url : AlbumCover.src
+    const trackName = state && state.item ? state.item.name : '播放器闲置中~'
+    const artistsName = state && state.item ? state.item.artists[0].name : 'Ciallo～(∠·ω< )⌒★'
+    const cover = state && state.item ? state.item.album.images[0].url : AlbumCover.src
 
     const handlePlay = async () => {
         'use server'
@@ -33,7 +33,7 @@ export default async function Player() {
     return <div className={'flex flex-wrap bg-aquamarine-back p-5 relative justify-center'}>
         <div className={'flex w-full'}>
             <div className={'flex-none min-w-0'}>
-                <Image src={cover} isBlurred className={'h-32 w-32 object-cover'} radius={'none'}/>
+                <Image src={cover} isBlurred className={'h-32 w-32 object-cover'} radius={'none'} alt={`歌曲${trackName}封面`}/>
             </div>
             <div className={'flex flex-col ml-5 text-aquamarine-front flex-grow'}>
                 <div className={'text-xl md:text-5xl font-black'}>{trackName}</div>
