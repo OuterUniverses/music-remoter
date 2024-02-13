@@ -2,9 +2,9 @@
 
 import {redirect} from "next/navigation";
 import {config} from "@/app.config";
+import {deleteRecord} from "@/app/lib/db";
 
 export async function clearCache() {
-    globalThis.SA = undefined
-    globalThis.token = undefined
+    await deleteRecord('token')
     return redirect(config.app.authPath)
 }

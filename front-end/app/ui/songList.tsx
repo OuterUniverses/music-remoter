@@ -3,6 +3,7 @@ import {searchTrack} from "@/app/lib/spotify";
 import AddToList from "@/app/ui/addToList";
 import Pagination from "@/app/ui/pagination";
 import {MdOutlineManageSearch} from "react-icons/md";
+import {Track} from "@spotify/web-api-ts-sdk";
 
 export default async function SongList(
     {query, currentPage}: { query: string, currentPage: number }
@@ -14,7 +15,7 @@ export default async function SongList(
         className="w-full px-1 pt-2 bg-white pb-5" id={'songList'}>
         <div className={'mx-3 my-5'}>
             {
-                searchResult ? searchResult.tracks.items.map((item) => <div
+                searchResult ? searchResult.tracks.items.map((item: Track) => <div
                     key={item.id}
                     className={'p-4 items-center flex hover:bg-gray-100 transition-colors group'}
                 >

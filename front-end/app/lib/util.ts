@@ -1,3 +1,4 @@
+
 export function checkEnv(envKey: Array<string>) {
     envKey.forEach((key) => {
         if (process.env[`${key}`] === undefined) {
@@ -5,5 +6,3 @@ export function checkEnv(envKey: Array<string>) {
         }
     })
 }
-
-

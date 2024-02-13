@@ -6,23 +6,23 @@ import {config} from "@/app.config";
 import {DeviceButton, NextButton, PauseButton, PlayButton, RefreshButton} from "@/app/ui/playerButton";
 
 export default async function Player() {
-    const state = await getPlayerState() as any
-    const currDeviceID = globalThis.playbackDeviceID
+    const state = await getPlayerState()
+    const currDeviceID = state ? state.device.id as string : undefined
     const trackName = state && state.item ? state.item.name : '播放器闲置中~'
     const artistsName = state && state.item ? state.item.artists[0].name : 'Ciallo～(∠·ω< )⌒★'
     const cover = state && state.item ? state.item.album.images[0].url : AlbumCover.src
 
     const handlePlay = async () => {
         'use server'
-        await play()
+        await play(currDeviceID)
     }
     const handlePause = async () => {
         'use server'
-        await pause()
+        await pause(currDeviceID)
     }
     const handleNext = async () => {
         'use server'
-        await next()
+        await next(currDeviceID)
     }
 
     const handleRefresh = async () => {

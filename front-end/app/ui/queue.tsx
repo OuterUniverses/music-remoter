@@ -13,7 +13,6 @@ export default async function Queue() {
                     <span className={'font-bold mr-2'}>{index + 1}</span>
                     <div className={'flex flex-col md:flex-row'}>
                         <span>{track.name}</span>
-                        {/*@ts-ignore*/}
                         <span className={'md:ml-2 font-light text-gray-400'}>{track.artists[0].name}</span>
                     </div>
                 </div>)
