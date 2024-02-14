@@ -8,6 +8,7 @@ on:
 jobs:
   deploy:
     runs-on: self-hosted
+    environment: production
 
     steps:
       - name: Checkout Repository
@@ -17,5 +18,5 @@ jobs:
         env:
           SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
           SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
-          SITE: ${{ secrets.SITE }}
+          SITE: ${{ vars.SITE }}
         run: docker compose up -d --build
