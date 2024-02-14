@@ -5,6 +5,7 @@ import {config} from "@/app.config";
 import {spotifyTokenCall} from "@/app/lib/spotify";
 import {writeToken} from "@/app/lib/spotify";
 
+export const dynamic = 'force-dynamic'
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url)
     const error = searchParams.get('error')

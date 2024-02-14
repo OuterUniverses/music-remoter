@@ -33,5 +33,5 @@ export type PlaybackState = {
 
 export type Queue = {
     currently_playing: Track | null
-    queue: Track[]
+    queue: Track[] | undefined
 }
