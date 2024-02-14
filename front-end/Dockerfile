@@ -45,9 +45,12 @@ RUN adduser --system --uid 1001 nextjs
 
 #COPY --from=builder /app/public ./public
 
-RUN touch /data.db && \
-    chown nextjs:nodejs /data.db && \
-    chmod 660 /data.db
+RUN touch /app/data.db && \
+    chown nextjs:nodejs /app/data.db && \
+    chmod 660 /app/data.db
+
+RUN chown nextjs:nodejs /app && \
+    chmod 770 /app
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
