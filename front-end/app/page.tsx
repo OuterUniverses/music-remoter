@@ -15,8 +15,8 @@ export const dynamic = 'force-dynamic'
 export default async function Page(
     {searchParams}: { searchParams?: { query?: string; page?: number; track_uri?: string;} }
 ) {
-    if (!(await getToken())) redirect(config.app.authPath)
     checkEnv(['SPOTIFY_CLIENT_ID', 'SPOTIFY_CLIENT_SECRET', 'SITE'])
+    if (!(await getToken())) redirect(config.app.authPath)
     // const user = await getUserProfile()
     const query = searchParams?.query || ''
     const currentPage = searchParams?.page || 1
