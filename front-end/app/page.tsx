@@ -16,7 +16,7 @@ export default async function Page(
     {searchParams}: { searchParams?: { query?: string; page?: number; track_uri?: string;} }
 ) {
     if (!(await getToken())) redirect(config.app.authPath)
-    checkEnv(['NEXT_PUBLIC_SPOTIFY_CLIENT_ID', 'SPOTIFY_CLIENT_SECRET', 'NEXT_PUBLIC_SPOTIFY_REDIRECT_URI'])
+    checkEnv(['SPOTIFY_CLIENT_ID', 'SPOTIFY_CLIENT_SECRET', 'SITE'])
     // const user = await getUserProfile()
     const query = searchParams?.query || ''
     const currentPage = searchParams?.page || 1

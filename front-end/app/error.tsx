@@ -16,7 +16,6 @@ export default function Page(
             <p className={'text-3xl font-bold w-fit'}>出错了</p>
             <p className={'font-light w-fit'}>联系管理员重新验证试试吧</p>
             <p className={'w-fit'}>{error.message}</p>
-            {/*<SpotifyLoginButton client_id={config.api.spotifyClientID} redirect_url={config.api.spotifyRedirectUri} scope={config.api.scope} />*/}
             <form action={clearCache}>
                 <Button color={'primary'} type={'submit'}>清除缓存</Button>
             </form>

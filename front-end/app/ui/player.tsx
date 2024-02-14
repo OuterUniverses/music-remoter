@@ -4,6 +4,8 @@ import {getPlayerState, pause, play, next} from "@/app/lib/spotify";
 import {revalidatePath} from "next/cache";
 import {config} from "@/app.config";
 import {DeviceButton, NextButton, PauseButton, PlayButton, RefreshButton} from "@/app/ui/playerButton";
+import {ReactNode} from "react";
+import ErrorBoundary from "@/app/ui/buttonErrorBoundary";
 
 export default async function Player() {
     const state = await getPlayerState()
@@ -48,4 +50,14 @@ export default async function Player() {
             <form action={handleNext}><NextButton/></form>
         </div>
     </div>
+}
+
+function ButtonWrapper(
+    {children, action}: {children: ReactNode, action: ((formData: FormData) => void)}
+) {
+    return <form action={action}>
+        <ErrorBoundary>
+            {children}
+        </ErrorBoundary>
+    </form>
 }
