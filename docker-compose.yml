@@ -17,6 +17,7 @@ services:
       - "traefik.http.routers.music.rule=Host(`music.itsp3.space`)"
       - "traefik.http.routers.music.tls=true"
       - "traefik.http.routers.music.tls.certresolver=production"
+      - "traefik.http.routers.music.middlewares=authelia@docker"
 
 networks:
   out:
