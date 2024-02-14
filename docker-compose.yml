@@ -13,10 +13,10 @@ services:
       - out
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.blog.entrypoints=websecure"
-      - "traefik.http.routers.blog.rule=Host(`music.itsp3.space`)"
-      - "traefik.http.routers.blog.tls=true"
-      - "traefik.http.routers.blog.tls.certresolver=production"
+      - "traefik.http.routers.music.entrypoints=websecure"
+      - "traefik.http.routers.music.rule=Host(`music.itsp3.space`)"
+      - "traefik.http.routers.music.tls=true"
+      - "traefik.http.routers.music.tls.certresolver=production"
 
 networks:
   out:
