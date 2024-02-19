@@ -18,6 +18,11 @@ export type SearchTracks = {
     tracks: Page<Track>
 }
 
+export type spotifyApiCallError = {
+    error: string,
+    error_description: string
+}
+
 export type PlaybackState = {
     device: Device
     repeat_state: string

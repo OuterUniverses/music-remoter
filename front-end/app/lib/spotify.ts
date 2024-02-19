@@ -3,7 +3,15 @@
 import {config} from "@/app.config";
 import axios, {AxiosError} from "axios";
 import {SPOTIFY_API_BASE_URL, SPOTIFY_TOKEN_URL} from "@/app/lib/static";
-import {ErrorMessages, RequestType, SearchTracks, SpotifyTokenRespond, PlaybackState, Queue} from "@/app/lib/type";
+import {
+    ErrorMessages,
+    PlaybackState,
+    Queue,
+    RequestType,
+    SearchTracks,
+    spotifyApiCallError,
+    SpotifyTokenRespond
+} from "@/app/lib/type";
 import {redirect} from "next/navigation";
 import {revalidatePath} from "next/cache";
 import {deleteRecord, retrieveObject, saveObject} from "@/app/lib/db";
@@ -27,12 +35,15 @@ export async function spotifyTokenCall(bodyParams: { [key: string]: string }) {
  * @param type 请求类型
  * @param body 请求body数据
  * @param params url参数
+ * @param times 重试次数
+ * @param overwriteToken 可以覆盖getToken()
  */
 async function spotifyApiCall(path: string, type: RequestType, body: { [key: string]: any } | null, params?: {
     [key: string]: string
-}) {
+}, times = 1, overwriteToken?: SpotifyTokenRespond) {
     const searchParams = new URLSearchParams(params)
-    const token = await getToken()
+    let token = await getToken()
+    if (overwriteToken) token = overwriteToken
     const url = `${SPOTIFY_API_BASE_URL}${path}?${searchParams.toString()}`
     const errorMessages: ErrorMessages = {
         401: 'Bad or expired token. This can happen if the user revoked a token or the access token has expired. You should re-authenticate the user.',
@@ -52,15 +63,22 @@ async function spotifyApiCall(path: string, type: RequestType, body: { [key: str
             return result.data
         } else if (type === 'GET') {
             // console.log(`new get url: ${url}`)
-            return (await axios.get(url, axiosConfig)).data as any
+            const result = await axios.get(url, axiosConfig)
+            return result.data
         } else if (type === 'PUT') {
             return (await axios.put(url, body, axiosConfig)).data as any
         }
     } catch (error) {
         if (axios.isAxiosError(error)) {
             const axiosError = error as AxiosError
-            if (axiosError.status) {
-                const message = errorMessages[axiosError.status] || 'An unexpected error occurred.';
+            if (axiosError.response?.status) {
+                // 401是Bad Token，会尝试renewToken然后重试一次
+                if (axiosError.response?.status === 401 && times > 0) {
+                    const newToken = await renewToken(token.refresh_token)
+                    await spotifyApiCall(path, type, body, params, times - 1, newToken)
+                    return
+                }
+                const message = errorMessages[axiosError.response?.status] || 'An unexpected error occurred.';
                 throw new Error(message)
             }
         } else {
@@ -78,11 +96,13 @@ export async function signOut() {
 
 export async function getToken() {
     let tokenObj = await retrieveObject('token')
+    const tokenStatus = await checkToken(tokenObj)
+    // console.log('is token valid', tokenStatus)
     if (!tokenObj) {
         console.log('Token file missing! Redirecting to auth page.')
         return redirect(config.app.authPath)
     }
-    if (!(await checkToken(tokenObj))) {
+    if (!tokenStatus) {
         tokenObj = await renewToken(tokenObj.refresh_token)
     }
     return tokenObj as SpotifyTokenRespond
@@ -92,6 +112,10 @@ export async function writeToken(tokenRespond: SpotifyTokenRespond) {
     await saveObject('token', tokenRespond)
 }
 
+/**
+ * 检查Token有没有过期 True为有效 False为过期
+ * @param tokenObj
+ */
 export async function checkToken(tokenObj: SpotifyTokenRespond) {
     const currDate = new Date().toISOString()
     const expDate = new Date(Date.now() + Number(tokenObj.expires_in) * 1000).toISOString()
@@ -106,11 +130,15 @@ export async function renewToken(rToken: string) {
     }
     try {
         const respond = await spotifyTokenCall(authOptions)
+        await writeToken(respond)
         console.log('Renew token success!')
         return respond
     } catch (error) {
-        console.error('Fail to renew token', error)
-        throw new Error('无法更新身份信息')
+        if (axios.isAxiosError(error)) {
+            const axiosError = error as AxiosError
+            const errorMessage = axiosError.response?.data as spotifyApiCallError
+            throw new Error(errorMessage.error_description)
+        }
     }
 }
 
